@@ -129,7 +129,7 @@ services:
     container_name: voltio_pgadmin
     restart: unless-stopped
     ports:
-      - "127.0.0.1:5050:80"   # Only accessible via SSH tunnel
+      - "5050:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@voltio.es}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin1234}
@@ -142,6 +142,21 @@ services:
     networks:
       - voltio_network
 
+  # ============================================
+  # Portainer — Docker Container Manager
+  # ============================================
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: voltio_portainer
+    restart: unless-stopped
+    ports:
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - portainer_data:/data
+    networks:
+      - voltio_network
+
 volumes:
   postgres_data:
     driver: local
@@ -150,6 +165,8 @@ volumes:
   mosquitto_log:
     driver: local
   pgadmin_data:
+    driver: local
+  portainer_data:
     driver: local
 
 networks:

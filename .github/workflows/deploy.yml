@@ -1,0 +1,70 @@
+name: 🚀 Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  SERVER_HOST: 46.225.137.160
+  SERVER_USER: root
+  APP_DIR: /opt/voltio
+
+jobs:
+  deploy:
+    name: Deploy to Hetzner VPS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📋 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            set -e
+            echo "═══════════════════════════════════════"
+            echo "  Voltio — Production Deploy"
+            echo "  $(date -Iseconds)"
+            echo "═══════════════════════════════════════"
+
+            cd ${{ env.APP_DIR }}
+
+            # Pull latest code
+            echo "→ Pulling latest code..."
+            git pull origin main
+
+            # Rebuild and restart containers
+            echo "→ Rebuilding containers..."
+            docker compose -f docker-compose.prod.yml --env-file .env.production build --no-cache backend frontend
+
+            echo "→ Restarting services..."
+            docker compose -f docker-compose.prod.yml --env-file .env.production up -d
+
+            # Run migrations (safe to re-run, uses IF NOT EXISTS)
+            echo "→ Running database migrations..."
+            for f in backend/src/db/migrations/*.sql; do
+              echo "  Applying: $(basename $f)"
+              docker compose -f docker-compose.prod.yml exec -T postgres \
+                psql -U fpsaver_admin -d fpsaver < "$f" 2>&1 || true
+            done
+
+            # Cleanup old images
+            echo "→ Cleaning up old images..."
+            docker image prune -f
+
+            # Health check
+            echo "→ Waiting for services to start..."
+            sleep 10
+
+            echo "→ Health check..."
+            curl -sf http://localhost/api/health && echo " ✅ API healthy" || echo " ⚠️ API not responding"
+
+            echo ""
+            echo "✅ Deploy complete!"
+            echo "═══════════════════════════════════════"

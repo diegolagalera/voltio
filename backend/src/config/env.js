@@ -1,4 +1,8 @@
-require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
+// In production (Docker), env vars are injected by the container.
+// In development, load from the root .env file.
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
+}
 
 module.exports = {
   port: process.env.BACKEND_PORT || 3000,

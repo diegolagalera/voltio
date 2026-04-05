@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log*
+.env
+.env.*
+docs
+scripts
+TODO.md
+*.md
+.git
+.gitignore

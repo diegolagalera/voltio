@@ -1,0 +1,15 @@
+# ============================================
+# FPSaver MQTT ACL Configuration
+# Auto-generated — do not edit manually
+# ============================================
+
+# Backend service — full access
+user backend_service
+topic readwrite #
+
+# Factory: 91ddc8de-a84e-4d98-88ef-95b5a78747a2
+user fac_91ddc8de
+topic write factory/91ddc8de-a84e-4d98-88ef-95b5a78747a2/telemetry
+topic write factory/91ddc8de-a84e-4d98-88ef-95b5a78747a2/status
+topic read factory/91ddc8de-a84e-4d98-88ef-95b5a78747a2/commands
+

@@ -1,0 +1,102 @@
+{
+    "app": {
+        "name": "Voltio",
+        "tagline": "Gestión de Eficiencia Energética Industrial"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "factories": "Fábricas",
+        "devices": "Dispositivos",
+        "users": "Usuarios",
+        "contracts": "Contratos",
+        "alarms": "Alarmas",
+        "kpi": "KPIs",
+        "settings": "Ajustes",
+        "logout": "Cerrar sesión",
+        "companies": "Empresas"
+    },
+    "auth": {
+        "login": "Iniciar sesión",
+        "email": "Correo electrónico",
+        "password": "Contraseña",
+        "submit": "Entrar",
+        "error": "Credenciales inválidas",
+        "welcome": "Bienvenido a Voltio"
+    },
+    "common": {
+        "loading": "Cargando...",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "create": "Crear",
+        "search": "Buscar",
+        "filter": "Filtrar",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "confirm": "Confirmar",
+        "actions": "Acciones",
+        "name": "Nombre",
+        "email": "Email",
+        "phone": "Teléfono",
+        "role": "Rol",
+        "status": "Estado",
+        "date": "Fecha",
+        "noData": "Sin datos disponibles",
+        "error": "Error",
+        "success": "Éxito"
+    },
+    "roles": {
+        "superadmin": "Super Admin",
+        "manager": "Manager",
+        "gerencia": "Gerencia",
+        "operador": "Operador"
+    },
+    "devices": {
+        "title": "Dispositivos",
+        "type": {
+            "monofasica": "Monofásica",
+            "trifasica": "Trifásica",
+            "master": "Master General"
+        },
+        "modbusAddress": "Dirección Modbus",
+        "serialNumber": "Nº Serie",
+        "model": "Modelo"
+    },
+    "telemetry": {
+        "realtime": "Tiempo Real",
+        "history": "Histórico",
+        "voltage": "Voltaje",
+        "current": "Corriente",
+        "power": "Potencia",
+        "energy": "Energía",
+        "powerFactor": "Factor de Potencia",
+        "frequency": "Frecuencia",
+        "demand": "Demanda",
+        "today": "Hoy",
+        "week": "Semana",
+        "month": "Mes",
+        "year": "Año"
+    },
+    "kpi": {
+        "title": "Indicadores Clave",
+        "costs": "Costes Energéticos",
+        "carbon": "Huella de Carbono",
+        "efficiency": "Eficiencia",
+        "costPerKwh": "€/kWh",
+        "totalConsumption": "Consumo Total",
+        "co2Emissions": "Emisiones CO₂",
+        "peakDemand": "Demanda Pico"
+    },
+    "alarms": {
+        "title": "Alarmas",
+        "active": "Activas",
+        "acknowledged": "Reconocidas",
+        "acknowledge": "Reconocer",
+        "severity": {
+            "info": "Información",
+            "warning": "Advertencia",
+            "critical": "Crítica"
+        }
+    }
+}

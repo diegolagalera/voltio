@@ -1,0 +1,102 @@
+{
+    "app": {
+        "name": "Voltio",
+        "tagline": "Industrial Energy Efficiency Management"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "factories": "Factories",
+        "devices": "Devices",
+        "users": "Users",
+        "contracts": "Contracts",
+        "alarms": "Alarms",
+        "kpi": "KPIs",
+        "settings": "Settings",
+        "logout": "Logout",
+        "companies": "Companies"
+    },
+    "auth": {
+        "login": "Sign In",
+        "email": "Email",
+        "password": "Password",
+        "submit": "Sign In",
+        "error": "Invalid credentials",
+        "welcome": "Welcome to Voltio"
+    },
+    "common": {
+        "loading": "Loading...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "create": "Create",
+        "search": "Search",
+        "filter": "Filter",
+        "active": "Active",
+        "inactive": "Inactive",
+        "confirm": "Confirm",
+        "actions": "Actions",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "role": "Role",
+        "status": "Status",
+        "date": "Date",
+        "noData": "No data available",
+        "error": "Error",
+        "success": "Success"
+    },
+    "roles": {
+        "superadmin": "Super Admin",
+        "manager": "Manager",
+        "gerencia": "Management",
+        "operador": "Operator"
+    },
+    "devices": {
+        "title": "Devices",
+        "type": {
+            "monofasica": "Single Phase",
+            "trifasica": "Three Phase",
+            "master": "Master Panel"
+        },
+        "modbusAddress": "Modbus Address",
+        "serialNumber": "Serial Number",
+        "model": "Model"
+    },
+    "telemetry": {
+        "realtime": "Real-time",
+        "history": "History",
+        "voltage": "Voltage",
+        "current": "Current",
+        "power": "Power",
+        "energy": "Energy",
+        "powerFactor": "Power Factor",
+        "frequency": "Frequency",
+        "demand": "Demand",
+        "today": "Today",
+        "week": "Week",
+        "month": "Month",
+        "year": "Year"
+    },
+    "kpi": {
+        "title": "Key Performance Indicators",
+        "costs": "Energy Costs",
+        "carbon": "Carbon Footprint",
+        "efficiency": "Efficiency",
+        "costPerKwh": "€/kWh",
+        "totalConsumption": "Total Consumption",
+        "co2Emissions": "CO₂ Emissions",
+        "peakDemand": "Peak Demand"
+    },
+    "alarms": {
+        "title": "Alarms",
+        "active": "Active",
+        "acknowledged": "Acknowledged",
+        "acknowledge": "Acknowledge",
+        "severity": {
+            "info": "Information",
+            "warning": "Warning",
+            "critical": "Critical"
+        }
+    }
+}

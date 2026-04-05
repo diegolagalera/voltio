@@ -1,0 +1,316 @@
+# Bloques de registros resaltados (agrupar consecutivos)
+REGISTER_BLOCKS = [
+    (0x0000, 2),  # V L1-N
+    (0x0002, 2),  # V L2-N
+    (0x0004, 2),  # V L3-N
+    (0x0006, 2),  # V L1-L2
+    (0x0008, 2),  # V L2-L3
+    (0x000A, 2),  # V L3-L1
+    (0x000C, 2),  # A L1
+    (0x000E, 2),  # A L2
+    (0x0010, 2),  # A L3
+    (0x0012, 2),  # W L1
+    (0x0014, 2),  # W L2
+    (0x0016, 2),  # W L3
+    (0x0018, 2),  # VA L1
+    (0x001A, 2),  # VA L2
+    (0x001C, 2),  # VA L3
+    (0x001E, 2),  # VAR L1
+    (0x0020, 2),  # VAR L2
+    (0x0022, 2),  # VAR L3
+    (0x0024, 2),  # V L-N
+    (0x0026, 2),  # V L-L
+    (0x0028, 2),  # W
+    (0x002A, 2),  # VA
+    (0x002C, 2),  # VAR
+    (0x002E, 1),  # PF L1
+    (0x002F, 1),  # PF L2
+    (0x0030, 1),  # PF L3
+    (0x0031, 1),  # PF
+    (0x0032, 1),  # PHASE SEQUENCE
+    (0x0033, 1),  # HZ
+    (0x0034, 2),  # KWH(+) TOT
+    (0x0036, 2),  # KVARH(+) TOT
+    (0x0038, 2),  # DMD W
+    (0x003A, 2),  # DMD W MAX
+    (0x003C, 2),  # KWH (+) PAR
+    (0x003E, 2),  # KWARH (+) PAR
+    (0x0040, 2),  # KWH (+) L1
+    (0x0042, 2),  # KWH (+) L2
+    (0x0044, 2),  # KWH (+) L3
+    (0x004E, 2),  # KWH(-) TOT
+    (0x0050, 2),  # KVARH(-) TOT
+    (0x005A, 2),  # HOUR
+    (0x0076, 2),  # DMD VA
+    (0x0078, 2),  # DMD VA MAX
+    (0x007A, 2),  # DMD A MAX
+    #--------------------------------
+    (0x00FE, 2),  # HOUR (BY PHASE)
+    (0x0102, 2),  # V L-N (BY PHASE)
+    (0x0104, 2),  # V L-L (BY PHASE)
+    (0x0106, 2),  # W (BY PHASE)
+    (0x0108, 2),  # VA (BY PHASE)
+    (0x010A, 2),  # VAR (BY PHASE)
+    (0x010C, 2),  # PF (BY PHASE)
+    (0x010E, 2),  # PHASE SEQUENCE (BY PHASE)
+    (0x0110, 2),  # HZ (BY PHASE)
+    (0x0112, 2),  # KWH (+) TOT (BY PHASE)
+    (0x0114, 2),  # KVARH (+) TOT (BY PHASE)
+    (0x0116, 2),  # KWH (-) TOT (BY PHASE)
+    (0x0118, 2),  # KVARH (-) TOT (BY PHASE)
+    (0x011A, 2),  # DMD W (BY PHASE)
+    (0x011C, 2),  # DMD W MAX (BY PHASE)
+    (0x0148, 2),  # KWH (+) PAR (BY PHASE)
+    (0x014A, 2),  # KVARH (+) PAR (BY PHASE)
+    (0x014C, 2),  # KWH (+) L1 (BY PHASE)
+    (0x014E, 2),  # KWH (+) L2 (BY PHASE)
+    (0x0150, 2),  # KWH (+) L3 (BY PHASE)
+    (0x017A, 2),  # DMD VA (BY PHASE)
+    (0x017C, 2),  # DMD VA MAX (BY PHASE)
+    (0x017E, 2),  # DMD A MAX (BY PHASE)
+    #-------------------------------- SERIAL NUMBER
+    (0x5000, 1),  # LETTER 1 (SN)
+    (0x5001, 1),  # LETTER 2 (SN)
+    (0x5002, 1),  # LETTER 3 (SN)
+    (0x5003, 1),  # LETTER 4 (SN)
+    (0x5004, 1),  # LETTER 5 (SN)
+    (0x5005, 1),  # LETTER 6 (SN)
+    (0x5006, 1),  # LETTER 7 (SN)
+    #-------------------------------- FRONT SELECTOR
+    (0xA100, 1),  # SELECTOR STATUS (SN)
+    #-------------------------------- programing parameters
+    (0x1000, 1),  # PASSWORD
+    (0x1002, 1),  # MEASURING SYSTEM
+    (0x1003, 2),  # CT RATIO
+    (0x1005, 2),  # VT RATIO
+    (0x1010, 2),  # INTERVAL TIME
+    (0x1108, 1),  # FILTER SPAN
+    (0x1109, 1),  # FILTER COEFFICIENT
+    (0xA000, 1),  # TYPE OF APPLICATION
+    (0xA001, 1),  # DEFAULT PAGE LOCK
+    (0xA002, 1),  # DEFAULT PAGE POSITION 1
+    (0xA003, 1),  # DEFAULT PAGE POSITION 2
+    (0xA004, 1),  # DEFAULT PAGE POSITION KVARH
+    (0xA005, 1),  # ID USER1
+    (0xA006, 1),  # ID USER2
+    (0xA007, 1),  # ID USER3
+    #-------------------------------- TARIFF
+    (0x1201, 1),  # CURRENT TARIFF
+
+]
+
+
+def process_registers(all_data):
+    # Procesa los registros leídos
+    processed_data = {}
+    for address, registers in all_data.items():
+        if len(registers) == 2:  # INT32
+            value_raw = (registers[1] << 16) | registers[0]
+        else:  # INT16
+            value_raw = registers[0]
+
+        # Aplica divisores según la tabla
+        if address == "0x0":  # V L1-N
+            processed_data["V L1-N"] = value_raw / 10
+        elif address == "0x2":  # V L2-L3
+            processed_data["V L2-N"] = value_raw / 10
+        elif address == "0x4":  # V L3-N
+            processed_data["V L3-N"] = value_raw / 10
+        elif address == "0x6":  # V L1-L2
+            processed_data["V L1-L2"] = value_raw / 10
+        elif address == "0x8":  # V L2-L3
+            processed_data["V L2-L3"] = value_raw / 10
+        elif address == "0xa":  # V L3-L1
+            processed_data["V L3-L1"] = value_raw / 10
+        elif address == "0xc":  # A L1
+            processed_data["A L1"] = value_raw / 1000
+        elif address == "0xe":  # A L2
+            processed_data["A L2"] = value_raw / 1000
+        elif address == "0x10":  # A L3
+            processed_data["A L3"] = value_raw / 1000
+        elif address == "0x12":  # W L1
+            processed_data["W L1"] = value_raw / 10
+        elif address == "0x14":  # W L2
+            processed_data["W L2"] = value_raw / 10
+        elif address == "0x16":  # W L3
+            processed_data["W L3"] = value_raw / 10
+        elif address == "0x18":  # VA L1
+            processed_data["VA L1"] = value_raw / 10
+        elif address == "0x1a":  # VA L2
+            processed_data["VA L2"] = value_raw / 10
+        elif address == "0x1c":  # VA L3
+            processed_data["VA L3"] = value_raw / 10
+        elif address == "0x1e":  # VAR L1
+            processed_data["VAR L1"] = value_raw / 10
+        elif address == "0x20":  # VAR L2
+            processed_data["VAR L2"] = value_raw / 10
+        elif address == "0x22":  # VAR L3
+            processed_data["VAR L3"] = value_raw / 10
+        elif address == "0x24":  # V L-N
+            processed_data["V L-N"] = value_raw / 10
+        elif address == "0x26":  # V L-L
+            processed_data["V L-L"] = value_raw / 10
+        elif address == "0x28":  # W
+            processed_data["W"] = value_raw / 10
+        elif address == "0x2a":  # VA
+            processed_data["VA"] = value_raw / 10
+        elif address == "0x2c":  # VAR
+            processed_data["VAR"] = value_raw / 10
+        elif address == "0x2e":  # PF L1
+            processed_data["PF L1"] = value_raw / 1000
+        elif address == "0x2f":  # PF L2
+            processed_data["PF L2"] = value_raw / 1000
+        elif address == "0x30":  # PF L3
+            processed_data["PF L3"] = value_raw / 1000
+        elif address == "0x31":  # PF
+            processed_data["PF"] = value_raw / 1000
+        elif address == "0x32":  # PHASE SEQUENCE
+            processed_data["PHASE SEQUENCE"] = value_raw
+        elif address == "0x33":  # HZ
+            processed_data["HZ"] = value_raw / 10
+        elif address == "0x34":  # KWH(+) TOT
+            processed_data["KWH(+) TOT"] = value_raw / 10
+        elif address == "0x36":  # KVARH(+) TOT
+            processed_data["KVARH(+) TOT"] = value_raw / 10
+        elif address == "0x38":  # DMD W
+            processed_data["DMD W"] = value_raw
+        elif address == "0x3a":  # DMD W MAX
+            processed_data["DMD W MAX"] = value_raw
+        elif address == "0x3c":  # KWH (+) PAR
+            processed_data["KWH (+) PAR"] = value_raw / 10
+        elif address == "0x3e":  # KVARH (+) PAR
+            processed_data["KVARH (+) PAR"] = value_raw / 10
+        elif address == "0x40":  # KWH (+) L1 
+            processed_data["KWH (+) L1"] = value_raw / 10
+        elif address == "0x42":  # KWH (+) L2
+            processed_data["KWH (+) L2"] = value_raw / 10
+        elif address == "0x44":  # KWH (+) L3
+            processed_data["KWH (+) L3"] = value_raw / 10
+        elif address == "0x4e":  # KWH(-) TOT
+            processed_data["KWH(-) TOT"] = value_raw / 10
+        elif address == "0x50":  # KVARH(-) TOT
+            processed_data["KVARH(-) TOT"] = value_raw / 10
+        elif address == "0x5a":  # HOUR
+            processed_data["HOUR"] = value_raw / 100
+        elif address == "0x76":  # DMD VA
+            processed_data["DMD VA"] = value_raw /10
+        elif address == "0x78":  # DMD VA MAX
+            processed_data["DMD VA MAX"] = value_raw / 10
+        elif address == "0x7a":  # DMD A MAX
+            processed_data["DMD A MAX"] = value_raw / 1000
+        #--------------------------------
+        elif address == "0xfe":  # HOUR (BY PHASE)
+            processed_data["HOUR (BY PHASE)"] = value_raw / 100
+        elif address == "0x102":  # V L-N (BY PHASE)
+            processed_data["V L-N (BY PHASE)"] = value_raw / 10
+        elif address == "0x104":  # V L-L (BY PHASE)
+            processed_data["V L-L (BY PHASE)"] = value_raw / 10
+        elif address == "0x106":  # W (BY PHASE)
+            processed_data["W (BY PHASE)"] = value_raw / 10
+        elif address == "0x108":  # VA (BY PHASE)
+            processed_data["VA (BY PHASE)"] = value_raw / 10
+        elif address == "0x10a":  # VAR (BY PHASE)
+            processed_data["VAR (BY PHASE)"] = value_raw / 10
+        elif address == "0x10c":  # PF (BY PHASE)
+            processed_data["PF (BY PHASE)"] = value_raw / 1000
+        elif address == "0x10e":  # PHASE SEQUENCE (BY PHASE)
+            processed_data["PHASE SEQUENCE (BY PHASE)"] = value_raw
+        elif address == "0x110":  # HZ (BY PHASE)
+            processed_data["HZ (BY PHASE)"] = value_raw / 10
+        elif address == "0x112":  # KWH (+) TOT (BY PHASE)
+            processed_data["KWH (+) TOT (BY PHASE)"] = value_raw / 10
+        elif address == "0x114":  # KVARH (+) TOT (BY PHASE)
+            processed_data["KVARH (+) TOT (BY PHASE)"] = value_raw / 10
+        elif address == "0x116":  # KWH (-) TOT (BY PHASE)
+            processed_data["KWH (-) TOT (BY PHASE)"] = value_raw / 10
+        elif address == "0x118":  # KVARH (-) TOT (BY PHASE)
+            processed_data["KVARH (-) TOT (BY PHASE)"] = value_raw / 10
+        elif address == "0x11a":  # DMD W (BY PHASE)
+            processed_data["DMD W (BY PHASE)"] = value_raw
+        elif address == "0x11c":  # DMD W MAX (BY PHASE)
+            processed_data["DMD W MAX (BY PHASE)"] = value_raw
+        elif address == "0x148":  # KWH (+) PAR (BY PHASE)
+            processed_data["KWH (+) PAR (BY PHASE)"] = value_raw / 10
+        elif address == "0x14a":  # KVARH (+) PAR (BY PHASE)
+            processed_data["KVARH (+) PAR (BY PHASE)"] = value_raw / 10
+        elif address == "0x14c":  # KWH (+) L1 (BY PHASE)
+            processed_data["KWH (+) L1 (BY PHASE)"] = value_raw / 10
+        elif address == "0x14e":  # KWH (+) L2 (BY PHASE)
+            processed_data["KWH (+) L2 (BY PHASE)"] = value_raw / 10
+        elif address == "0x150":  # KWH (+) L3 (BY PHASE)
+            processed_data["KWH (+) L3 (BY PHASE)"] = value_raw / 10
+        elif address == "0x17a":  # DMD VA (BY PHASE)
+            processed_data["DMD VA (BY PHASE)"] = value_raw / 10
+        elif address == "0x17c":  # DMD VA MAX (BY PHASE)
+            processed_data["DMD VA MAX (BY PHASE)"] = value_raw / 10
+        elif address == "0x17e":  # DMD A MAX (BY PHASE)
+            processed_data["DMD A MAX (BY PHASE)"] = value_raw / 1000
+        #-------------------------------- SERIAL NUMBER
+        elif address == "0x5000":  # LETTER 1 (SN)
+            processed_data["LETTER 1 (SN)"] = value_raw
+        elif address == "0x5001":  # LETTER 2 (SN)
+            processed_data["LETTER 2 (SN)"] = value_raw
+        elif address == "0x5002":  # LETTER 3 (SN)
+            processed_data["LETTER 3 (SN)"] = value_raw
+        elif address == "0x5003":  # LETTER 4 (SN)
+            processed_data["LETTER 4 (SN)"] = value_raw
+        elif address == "0x5004":  # LETTER 5 (SN)
+            processed_data["LETTER 5 (SN)"] = value_raw
+        elif address == "0x5005":  # LETTER 6 (SN)
+            processed_data["LETTER 6 (SN)"] = value_raw
+        elif address == "0x5006":  # LETTER 7 (SN)
+            processed_data["LETTER 7 (SN)"] = value_raw
+        #-------------------------------- SELECTOR STATUS
+        elif address == "0xa100":  # SELECTOR STATUS
+            processed_data["SELECTOR STATUS"] = value_raw
+        #-------------------------------- programing parameters
+        elif address == "0x1000":  # PASSWORD
+            processed_data["PASSWORD"] = value_raw
+        elif address == "0x1002":  # MEASURING SYSTEM
+            processed_data["MEASURING SYSTEM"] = value_raw
+        elif address == "0x1003":  # CT RATIO
+            processed_data["CT RATIO"] = value_raw
+        elif address == "0x1005":  # VT RATIO
+            processed_data["VT RATIO"] = value_raw
+        elif address == "0x1010":  # INTERVAL TIME
+            processed_data["INTERVAL TIME"] = value_raw
+        elif address == "0x1108":  # FILTER SPAN
+            processed_data["FILTER SPAN"] = value_raw
+        elif address == "0x1109":  # FILTER COEFFICIENT
+            processed_data["FILTER COEFFICIENT"] = value_raw
+        elif address == "0xa000":  # TYPE OF APPLICATION
+            processed_data["TYPE OF APPLICATION"] = value_raw
+        elif address == "0xa001":  # DEFAULT PAGE LOCK
+            processed_data["DEFAULT PAGE LOCK"] = value_raw
+        elif address == "0xa002":  # DEFAULT PAGE POSITION 1
+            processed_data["DEFAULT PAGE POSITION 1"] = value_raw
+        elif address == "0xa003":  # DEFAULT PAGE POSITION 2
+            processed_data["DEFAULT PAGE POSITION 2"] = value_raw
+        elif address == "0xa004":  # DEFAULT PAGE POSITION KVARH
+            processed_data["DEFAULT PAGE POSITION KVARH"] = value_raw
+        elif address == "0xa005":  # ID USER1
+            processed_data["ID USER1"] = value_raw
+        elif address == "0xa006":  # ID USER2
+            processed_data["ID USER2"] = value_raw
+        elif address == "0xa007":  # ID USER3
+            processed_data["ID USER3"] = value_raw
+        #-------------------------------- TARIFF
+        elif address == "0x1201":  # CURRENT TARIFF
+            processed_data["CURRENT TARIFF"] = value_raw
+
+        # if address == "0x0":  # V L1-N
+        #     processed_data["V L1-N"] = value_raw / 10
+        # elif address == "0x6":  # V L2-L3
+        #     processed_data["V L2-L3"] = value_raw / 10
+        # elif address == "0xa":  # A L1
+        #     processed_data["A L1"] = value_raw / 1000
+        # elif address == "0x1e":  # W Σ
+        #     processed_data["W Σ"] = value_raw / 10
+        # elif address == "0x2a":  # PF Σ
+        #     processed_data["PF Σ"] = value_raw / 1000
+        # elif address == "0x33":  # Hz
+        #     processed_data["Hz"] = value_raw / 10
+        # elif address == "0x34":  # kWh Σ TOT
+        #     processed_data["kWh Σ TOT"] = value_raw / 10
+
+    print("Datos procesados:", processed_data)

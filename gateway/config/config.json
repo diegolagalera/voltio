@@ -1,0 +1,40 @@
+{
+    "factory_id": "91ddc8de-a84e-4d98-88ef-95b5a78747a2",
+    "mqtt": {
+        "broker_host": "localhost",
+        "broker_port": 1883,
+        "username": "backend_service",
+        "password": "backend_service_pass",
+        "client_id_prefix": "rpi_factory",
+        "tls": {
+            "enabled": false,
+            "ca_cert": "./certs/ca.crt"
+        }
+    },
+    "network": {
+        "scan_range_start": "192.168.1.1",
+        "scan_range_end": "192.168.1.254",
+        "scan_port": 502,
+        "scan_on_boot": true,
+        "scan_timeout": 1
+    },
+    "devices": [
+        {
+            "device_id": "92f284b9-68e8-4730-a889-f862272e618b",
+            "name": "cocina diego",
+            "device_type": "trifasica",
+            "model": "SDM630MCT-V2",
+            "host": "192.168.1.201",
+            "port": 502,
+            "modbus_address": 1
+        }
+    ],
+    "intervals": {
+        "read_seconds": 5,
+        "batch_seconds": 300,
+        "realtime_seconds": 5,
+        "flush_seconds": 30,
+        "scan_interval_hours": 24,
+        "batch_mode": "average"
+    }
+}

@@ -46,13 +46,10 @@ jobs:
             echo "→ Restarting services..."
             docker compose -f docker-compose.prod.yml --env-file .env.production up -d
 
-            # Run migrations (safe to re-run, uses IF NOT EXISTS)
+            # Run migrations via node-pg-migrate
             echo "→ Running database migrations..."
-            for f in backend/src/db/migrations/*.sql; do
-              echo "  Applying: $(basename $f)"
-              docker compose -f docker-compose.prod.yml exec -T postgres \
-                psql -U fpsaver_admin -d fpsaver < "$f" 2>&1 || true
-            done
+            docker compose -f docker-compose.prod.yml --env-file .env.production \
+              exec -T backend npm run migrate
 
             # Cleanup old images
             echo "→ Cleaning up old images..."

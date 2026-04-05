@@ -16,7 +16,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fpsaver_secret_2026}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./backend/src/db/init:/docker-entrypoint-initdb.d
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-fpsaver_admin} -d ${POSTGRES_DB:-fpsaver}" ]
       interval: 10s

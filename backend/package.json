@@ -7,6 +7,10 @@
     "start": "node src/app.js",
     "dev": "lsof -ti:3000 | xargs kill -9 2>/dev/null; nodemon src/app.js",
     "seed": "node src/db/seed.js",
+    "migrate": "node src/db/migrate.js up",
+    "migrate:down": "node src/db/migrate.js down",
+    "migrate:redo": "node src/db/migrate.js redo",
+    "migrate:create": "node src/db/migrate.js create",
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
@@ -20,6 +24,7 @@
     "jsonwebtoken": "^9.0.2",
     "mqtt": "^5.10.4",
     "node-cron": "^4.2.1",
+    "node-pg-migrate": "^8.0.4",
     "openai": "^6.27.0",
     "pg": "^8.13.1",
     "socket.io": "^4.8.1",

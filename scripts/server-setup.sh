@@ -58,7 +58,7 @@ ufw default allow outgoing
 ufw allow 22/tcp comment 'SSH'
 ufw allow 80/tcp comment 'HTTP'
 ufw allow 443/tcp comment 'HTTPS (future)'
-ufw allow 8883/tcp comment 'MQTT TLS'
+ufw allow 1883/tcp comment 'MQTT'
 ufw allow 9443/tcp comment 'Portainer'
 ufw allow 5050/tcp comment 'pgAdmin'
 echo "y" | ufw enable

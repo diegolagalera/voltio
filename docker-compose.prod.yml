@@ -37,19 +37,19 @@ services:
     container_name: voltio_mosquitto
     restart: unless-stopped
     ports:
-      - "8883:8883"      # TLS — exposed for external gateways (RPi)
+      - "1883:1883"      # MQTT — exposed for gateways (RPi)
     volumes:
       - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - ./mosquitto/config/password_file:/mosquitto/config/password_file:ro
       - ./mosquitto/config/acl_file:/mosquitto/config/acl_file:ro
-      - ./mosquitto/certs:/mosquitto/certs:ro
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
     healthcheck:
-      test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1", "-i", "healthcheck", "-W", "3"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD-SHELL", "mosquitto_pub -h localhost -t '$$SYS/healthcheck' -m 'ping' -u healthcheck 2>&1 || exit 0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - voltio_network
 

@@ -48,6 +48,7 @@ const updateCompanySchema = Joi.object({
 // Factory Schemas
 // ============================================
 const createFactorySchema = Joi.object({
+    company_id: Joi.string().uuid().allow(null).strip(),
     name: Joi.string().min(2).max(255).required(),
     location_address: Joi.string().allow('', null),
     city: Joi.string().max(100).allow('', null),

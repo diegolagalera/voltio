@@ -15,6 +15,9 @@ const mqttService = require('./services/mqtt.service');
 const app = express();
 const server = http.createServer(app);
 
+// Behind Nginx reverse proxy — trust first proxy for correct IP detection
+app.set('trust proxy', 1);
+
 // ============================================
 // Global Middleware
 // ============================================

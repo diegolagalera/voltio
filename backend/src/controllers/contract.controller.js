@@ -176,8 +176,8 @@ const getCurrentCost = async (req, res) => {
 
             const snapResult = await db.query(
                 `SELECT
-                    COALESCE(SUM(total_cost), 0) AS today_cost,
-                    COALESCE(SUM(kwh), 0) AS today_kwh
+                    COALESCE(SUM(cost_eur), 0) AS today_cost,
+                    COALESCE(SUM(kwh_consumed), 0) AS today_kwh
                  FROM cost_snapshots
                  WHERE factory_id = $2
                    AND timestamp >= ${dayStart}

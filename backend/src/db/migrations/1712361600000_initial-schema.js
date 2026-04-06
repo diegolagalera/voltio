@@ -77,6 +77,8 @@ CREATE TABLE IF NOT EXISTS companies (
     tax_id          VARCHAR(50) UNIQUE,
     address         TEXT,
     city            VARCHAR(100),
+    phone           VARCHAR(20),
+    contact_email   VARCHAR(255),
     country         VARCHAR(100) DEFAULT 'España',
     timezone        VARCHAR(50) DEFAULT 'Europe/Madrid',
     logo_url        VARCHAR(500),
